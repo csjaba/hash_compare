@@ -55,6 +55,34 @@ class HashCompare
 	def same?
 		@old_hash == @new_hash
 	end
+	
+	# This function converts an CSV to hash, the lines inis file are
+	# converted to values and key is determined by id_column_number
+	#
+	# file_name , the name of the file that needs to scanned and converted
+	# to hash
+	#
+	# split_string , the field seprator
+	#
+	# id_column_number , for an hash you need to have a key, the key will be
+	# taken from the CSV file, it will be split and corresponding colum will
+	# be made as key 
+	def self.csv_to_hash file_name, split_string = ',', id_column_number = 0
+		f = File.open file_name, "r"
+		hash = {}
+		while line = f.gets
+			hash.store(line.split(split_string)[id_column_number], line)
+		end
+		f.close
+		hash
+	end
+	
+	# Takes two CSV's, converts it to hash, then you can use methods in
+	# HashCompare class to check difference between them 
+	def from_csv old_csv, new_csv, split_string = ',', id_column_number = 0
+		@old_hash = HashCompare::csv_to_hash old_csv, split_string, id_column_number
+		@new_hash = HashCompare::csv_to_hash new_csv, split_string, id_column_number
+	end
 end
 
 
